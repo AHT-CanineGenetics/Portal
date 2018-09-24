@@ -29,8 +29,8 @@
 </head>
 <body>
 
-	<canvas id="canvasBarcode" style="position:absolute;left:10px;top:20px;z-index:1" width="280px" height="100px"></canvas>
-	<div style="position:absolute;height:140px;width:300px;left:0px;top:0px;/*z-index:10;background-color:#FFFFFF*/">&nbsp;</div>
+	<canvas id="canvasBarcode" style="position:absolute;left:5px;top:5px;z-index:1" width="250px" height="80px"></canvas>
+	<div style="position:absolute;height:90px;width:260px;left:0px;top:0px;/*z-index:10;*/background-color:lightgray">&nbsp;</div>
 
 	
 	<!-- Latest compiled and minified JavaScript -->
@@ -51,15 +51,11 @@
 	
 	<script>
 	$(document).ready(function() {
-		generateBarcode("OSD1");
+		generateBarcode("CRA189");
 		
 		html2canvas($("#canvasBarcode"), {
 			onrendered: function(canvas) {
-				//createAllLabels(["OSD1"], ["OSD"], '', '', '', '', '')
-				createAllLabels(["OSD1"], ["OSD"], 'Dekdays Lexey of Tottlefields', 'Lexey', '941000015649553', 'Ellen Schofield', 'ellen@tottlefields.co.uk')
-				//var barcodeData = canvas.toDataURL('image/png', 1.0);
-				//createLabel(barcodeData, 'CTR100', 'GR_PRA1_and_GR_PRA2', 'Tally', 'ellen@tottlefields.co.uk');
-				//console.log(barcodeData);
+				//createAllLabels(["OSD55"], ["OSD"], 'Dekdays Lexey of Tottlefields', 'Lexey', '941000015649553', 'Ellen Schofield', 'ellen@tottlefields.co.uk');
 			}
 		});
 	});

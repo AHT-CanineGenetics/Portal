@@ -64,7 +64,7 @@ function generateBarcode(value) {
 		output : 'canvas',
 		bgColor : '#FFFFFF',
 		color : '#000000',
-		barWidth : 3,
+		barWidth : 2,
 		barHeight : 50,
 		posX : 0,
 		posY : 0,
@@ -77,7 +77,27 @@ function generateBarcode(value) {
 	return canvas.toDataURL("image/png");
 }
 
-function createAllLabels(swabs, testList, dogName, petName, TattooOrChip, ownerName, contact) {
+function createSingleLabel(row){
+	var labelData = [];
+	
+	var mainContact;	
+	if (row[14] !== "") { mainContact =row[14]; }
+	else if (row[15] !== "") { mainContact = row[15]; }
+	
+	labelData.push({
+		swabID: row[1], 
+		testName: row[2], 
+		dogName: row[5], 
+        petName: row[6], 
+        TattooOrChip: row[8],
+        ownerName: row[13],
+        contact: mainContact
+	});
+	createAllLabels(labelData);
+}
+
+//function createAllLabels(swabs, testList, dogName, petName, TattooOrChip, ownerName, contact) {
+function createAllLabels(labelData) {
 	pdfMake.fonts = {
 		Courier : {
 			normal : 'Courier.ttf',
@@ -120,9 +140,9 @@ function createAllLabels(swabs, testList, dogName, petName, TattooOrChip, ownerN
 		}
 	};
 
-	for (var i = 0; i < testList.length; i++) {
-		ddLabels.content.push(pdfLabel(swabs[i], testList[i], dogName, petName, TattooOrChip, ownerName, contact));
-		if (i < testList.length - 1)
+	for (var i = 0; i < labelData.length; i++) {
+		ddLabels.content.push(pdfLabel(labelData[i]));
+		if (i < labelData.length - 1)
 			ddLabels.content.push({
 				text : '',
 				style : 'small',
@@ -139,18 +159,19 @@ function createAllLabels(swabs, testList, dogName, petName, TattooOrChip, ownerN
 	pdfMake.createPdf(ddLabels).open();
 }
 
-function pdfLabel(swabID, testName, dogName, petName, TattooOrChip, ownerName, contact) {
+function pdfLabel(label) {
 	
-	barcodeData = generateBarcode(swabID);
-	dogName = dogName.toUpperCase();
+	//swabID, testName, dogName, petName, TattooOrChip, ownerName, contact
+	barcodeData = generateBarcode(label.swabID);
+	dogName = label.dogName.toUpperCase();
 	
 	if (dogName === '') {
-		dogName = petName;
+		dogName = label.petName;
 	} else {
-		dogName += ' (' + petName + ')';
+		dogName += ' (' + label.petName + ')';
 	}
-	if (TattooOrChip !== '') {
-		dogName += "\n" + TattooOrChip;
+	if (label.TattooOrChip !== '') {
+		dogName += "\n" + label.TattooOrChip;
 	}
 
 	return [ {
@@ -172,7 +193,7 @@ function pdfLabel(swabID, testName, dogName, petName, TattooOrChip, ownerName, c
 				text : 'Test',
 				style : 'strong'
 			}, {
-				text : testName.toUpperCase()
+				text : label.testName.toUpperCase()
 			} ], [ {
 				text : 'Dog',
 				style : 'strong'
@@ -182,7 +203,7 @@ function pdfLabel(swabID, testName, dogName, petName, TattooOrChip, ownerName, c
 				text : 'Contact',
 				style : 'strong'
 			}, {
-				text : ownerName.toUpperCase() + "\n" + contact
+				text : label.ownerName.toUpperCase() + "\n" + label.contact
 			} ] ]
 		},
 		layout : 'noBorders'
